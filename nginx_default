@@ -1,0 +1,26 @@
+server {
+	listen 80 default_site;
+	listen [::]:80 default_site ipv6only=on;
+
+	root /var/www/default_site;
+	index index.php index.html index.htm;
+
+	server_name default_site;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+	error_page 404 /404.html;
+
+	location = /50x.html {
+		root /var/www/default_site;
+	}
+
+	location ~ \.php$ {
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+		fastcgi_index index.php;
+		include fastcgi_params;
+	}
+}
